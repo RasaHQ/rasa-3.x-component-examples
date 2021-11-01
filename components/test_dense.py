@@ -1,4 +1,4 @@
-import pytest 
+import pytest
 
 from rasa.shared.nlu.training_data.message import Message
 from rasa.engine.storage.resource import Resource
@@ -13,22 +13,33 @@ node_resource = Resource("tokenizer")
 context = ExecutionContext(node_storage, node_resource)
 
 
-tokeniser = WhitespaceTokenizer({
-    "only_alphanum": False, 
-    "intent_tokenization_flag": False, 
-    "intent_split_symbol": "_"
-})
+tokeniser = WhitespaceTokenizer(
+    {
+        "only_alphanum": False,
+        "intent_tokenization_flag": False,
+        "intent_split_symbol": "_",
+    }
+)
 bpemb_feat = BytePairFeaturizer(
-    config={"lang": "en", "dim": 25, "vs": 1000, "alias": "foobar", "vs_fallback": True}, 
-    name=context.node_name
+    config={
+        "lang": "en",
+        "dim": 25,
+        "vs": 1000,
+        "alias": "foobar",
+        "vs_fallback": True,
+    },
+    name=context.node_name,
 )
 
-@pytest.mark.parametrize("text, expected", [("hello", 1), ("hello world", 2), ("hello there world", 3)])
+
+@pytest.mark.parametrize(
+    "text, expected", [("hello", 1), ("hello world", 2), ("hello there world", 3)]
+)
 def test_dense_feats_added(text, expected):
     """Checks if the sizes are appropriate."""
     # Create a message
     msg = Message({"text": text})
-    
+
     # Process will process a list of Messages
     tokeniser.process([msg])
     bpemb_feat.process([msg])

@@ -1,4 +1,4 @@
-import pytest 
+import pytest
 import pathlib
 
 from rasa.shared.nlu.training_data.message import Message
@@ -18,29 +18,30 @@ def tfidf_featurizer(tmpdir):
     node_resource = Resource("sparse_feat")
     context = ExecutionContext(node_storage, node_resource)
     return TfIdfFeaturizer(
-        config=TfIdfFeaturizer.get_default_config(), 
+        config=TfIdfFeaturizer.get_default_config(),
         name=context.node_name,
         resource=node_resource,
         model_storage=node_storage,
     )
 
 
-tokeniser = WhitespaceTokenizer({
-    "only_alphanum": False, 
-    "intent_tokenization_flag": False, 
-    "intent_split_symbol": "_"
-})
+tokeniser = WhitespaceTokenizer(
+    {
+        "only_alphanum": False,
+        "intent_tokenization_flag": False,
+        "intent_split_symbol": "_",
+    }
+)
 
-@pytest.mark.parametrize("text, expected", [
-    ("hello", 1), 
-    ("hello world", 2), 
-    ("hello there world", 3)
-])
+
+@pytest.mark.parametrize(
+    "text, expected", [("hello", 1), ("hello world", 2), ("hello there world", 3)]
+)
 def test_sparse_feats_added(tfidf_featurizer, text, expected):
     """Checks if the sizes are appropriate."""
     # Create a message
     msg = Message({"text": text})
-    
+
     # Process will process a list of Messages
     tokeniser.process([msg])
     tfidf_featurizer.train(TrainingData([msg]))
