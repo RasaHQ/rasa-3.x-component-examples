@@ -7,4 +7,7 @@ test:
 black:
 	black --check components
 
-check: flake black test
+train-nlu:
+	python -m rasa train nlu
+
+check: flake black test train-nlu
