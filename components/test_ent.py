@@ -34,7 +34,8 @@ tokeniser = WhitespaceTokenizer(
 
 
 @pytest.mark.parametrize(
-    "text, expected", [("hello World", ["World"]), ("Hello world", ["Hello"]), ("hello there world", [])]
+    "text, expected",
+    [("hello World", ["World"]), ("Hello world", ["Hello"]), ("hello there world", [])],
 )
 def test_sparse_feats_added(entity_extractor, text, expected):
     """Checks if the sizes are appropriate."""
@@ -46,4 +47,4 @@ def test_sparse_feats_added(entity_extractor, text, expected):
     entity_extractor.process([msg])
     # Check that the message has been processed correctly
     entities = msg.get("entities")
-    assert [e['value'] for e in entities] == expected
+    assert [e["value"] for e in entities] == expected
