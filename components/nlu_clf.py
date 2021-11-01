@@ -55,28 +55,42 @@ class LogisticRegressionClassifier(IntentClassifier, GraphComponent):
         self._model_storage = model_storage
         self._resource = resource
 
-    def _create_training_matrix(self, training_data: TrainingData) -> None:
+    def _create_X(self, messages: List[Message]) -> csr_matrix:
+        X = []
+        for e in messages:
+            # First element is sequence features, second is sentence features
+            sparse_feats = e.get_sparse_features(attribute=TEXT)[1]
+            # First element is sequence features, second is sentence features
+            dense_feats = e.get_dense_features(attribute=TEXT)[1]
+            together = hstack(
+                [
+                    csr_matrix(sparse_feats.features if sparse_feats else []),
+                    csr_matrix(dense_feats.features if dense_feats else []),
+                ]
+            )
+            X.append(together)
+        return vstack(X)
+
+    def _create_training_matrix(self, training_data: TrainingData):
         X = []
         y = []
         for e in training_data.training_examples:
             if e.get(INTENT):
                 # First element is sequence features, second is sentence features
-                sparse_feats = e.get_sparse_features(TEXT)[1]
+                sparse_feats = e.get_sparse_features(attribute=TEXT)[1]
                 # First element is sequence features, second is sentence features
-                dense_feats = e.get_dense_features(TEXT)[1]
-                if sparse_feats and dense_feats:
-                    together = hstack(
-                        [
-                            csr_matrix(sparse_feats.features),
-                            csr_matrix(dense_feats.features),
-                        ]
-                    )
-                    X.append(together)
-                    y.append(e.get(INTENT))
+                dense_feats = e.get_dense_features(attribute=TEXT)[1]
+                together = hstack(
+                    [
+                        csr_matrix(sparse_feats.features if sparse_feats else []),
+                        csr_matrix(dense_feats.features if dense_feats else []),
+                    ]
+                )
+                X.append(together)
+                y.append(e.get(INTENT))
         return vstack(X), y
 
     def train(self, training_data: TrainingData) -> Resource:
-
         X, y = self._create_training_matrix(training_data)
 
         self.clf.fit(X, y)
@@ -95,23 +109,23 @@ class LogisticRegressionClassifier(IntentClassifier, GraphComponent):
         return cls(config, execution_context.node_name, model_storage, resource)
 
     def process(self, messages: List[Message]) -> List[Message]:
-        for message in messages:
-            self._set_intent(message)
+        X = self._create_X(messages)
+        pred = self.clf.predict(X)
+        probas = self.clf.predict_proba(X)
+        for idx, message in enumerate(messages):
+            intent = {"name": pred[idx], "confidence": probas[idx].max()}
+            intents = self.clf.classes_
+            intent_info = {
+                k: v
+                for i, (k, v) in enumerate(zip(intents, probas[idx]))
+                if i < LABEL_RANKING_LENGTH
+            }
+            intent_ranking = [
+                {"name": k, "confidence": v} for k, v in intent_info.items()
+            ]
+            message.set("intent", intent, add_to_output=True)
+            message.set("intent_ranking", intent_ranking, add_to_output=True)
         return messages
-
-    def _set_intent(self, message: Message) -> None:
-        pred = self.clf.predict([message.get(TEXT)])[0]
-        probas = self.clf.predict_proba([message.get(TEXT)])[0]
-
-        intent = {"name": pred, "confidence": probas[0]}
-        intents = self.clf.classes_
-        intent_ranking = {
-            k: v
-            for i, (k, v) in enumerate(zip(intents, probas))
-            if i < LABEL_RANKING_LENGTH
-        }
-        message.set("intent", intent, add_to_output=True)
-        message.set("intent_ranking", intent_ranking, add_to_output=True)
 
     def persist(self) -> None:
         with self._model_storage.write_to(self._resource) as model_dir:
