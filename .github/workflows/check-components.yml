@@ -1,4 +1,4 @@
-name: Python package
+name: Check NLU Components
 
 on:
   push:
@@ -22,13 +22,10 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install General Dependencies for Unit Tests
+    - name: Install General Dependencies for Style Checks
       run: |
-        python -m pip install --upgrade pip setuptools wheel
-        pip install -e ".[dev]"
-        python -m spacy download en_core_web_sm
-        python -m spacy download en_core_web_md
-    - name: Test with pytest
+        python -m pip install flake8 black
+    - name: Check Styles
       run: |
-        python tests/scripts/prepare_fasttext_tests.py
-        pytest --verbose -m "not rasa"
+        flake8 components
+        black --check components
