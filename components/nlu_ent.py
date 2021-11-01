@@ -9,7 +9,7 @@ from rasa.shared.nlu.training_data.training_data import TrainingData
 from rasa.nlu.classifiers.classifier import IntentClassifier
 from rasa.shared.nlu.training_data.message import Message
 from rasa.shared.nlu.constants import (
-    TOKENS,
+    TEXT_TOKENS,
     ENTITY_ATTRIBUTE_TYPE,
     ENTITY_ATTRIBUTE_START,
     ENTITY_ATTRIBUTE_END,
@@ -76,7 +76,7 @@ class CapitalisedEntityExtractor(IntentClassifier, GraphComponent):
         return messages
 
     def _set_entities(self, message: Message, **kwargs: Any) -> None:
-        tokens: List[Token] = message.get(TOKENS)
+        tokens: List[Token] = message.get(TEXT_TOKENS)
         extracted_entities = []
         for token in tokens:
             if token.text[0].isupper():
