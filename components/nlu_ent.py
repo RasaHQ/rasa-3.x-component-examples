@@ -9,7 +9,6 @@ from rasa.shared.nlu.training_data.training_data import TrainingData
 from rasa.nlu.classifiers.classifier import IntentClassifier
 from rasa.shared.nlu.training_data.message import Message
 from rasa.shared.nlu.constants import (
-    TEXT,
     TOKENS,
     ENTITY_ATTRIBUTE_TYPE,
     ENTITY_ATTRIBUTE_START,
@@ -17,7 +16,6 @@ from rasa.shared.nlu.constants import (
     ENTITY_ATTRIBUTE_VALUE,
     ENTITIES,
 )
-from rasa.shared.nlu.constants import TEXT
 
 logger = logging.getLogger(__name__)
 

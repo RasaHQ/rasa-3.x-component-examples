@@ -1,5 +1,3 @@
-from rich import print
-
 import logging
 from typing import Any, Text, Dict, List, Type
 from scipy.sparse import hstack, vstack, csr_matrix
@@ -12,17 +10,12 @@ from rasa.nlu.featurizers.featurizer import Featurizer
 from rasa.shared.nlu.training_data.training_data import TrainingData
 from rasa.nlu.classifiers.classifier import IntentClassifier
 from rasa.nlu.classifiers import LABEL_RANKING_LENGTH
-from rasa.shared.nlu.training_data.features import Features
 from rasa.shared.nlu.training_data.message import Message
-from rasa.nlu.constants import (
-    DENSE_FEATURIZABLE_ATTRIBUTES,
-)
 from rasa.shared.nlu.constants import (
     TEXT,
     INTENT,
 )
 from joblib import dump, load
-from rasa.shared.nlu.constants import TEXT
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +126,7 @@ class LogisticRegressionClassifier(IntentClassifier, GraphComponent):
         execution_context: ExecutionContext,
     ) -> GraphComponent:
         with model_storage.read_from(resource) as model_dir:
-            tfidfvectorizer = load(model_dir / f"{self.name}.joblib")
+            tfidfvectorizer = load(model_dir / f"{resource.name}.joblib")
             component = cls(
                 config, execution_context.node_name, model_storage, resource
             )
