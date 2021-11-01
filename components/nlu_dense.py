@@ -1,5 +1,4 @@
 import numpy as np
-import typing
 import logging
 from bpemb import BPEmb
 from typing import Any, Text, Dict, List, Type
