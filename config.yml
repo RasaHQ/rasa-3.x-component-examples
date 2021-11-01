@@ -1,0 +1,33 @@
+recipe: default.v1
+
+language: en
+
+pipeline:
+  - name: components.nlu_tok.AnotherWhitespaceTokenizer
+  - name: RegexFeaturizer
+  - name: LexicalSyntacticFeaturizer
+  - name: CountVectorsFeaturizer
+  - name: CountVectorsFeaturizer
+    analyzer: char_wb
+    min_ngram: 1
+    max_ngram: 4
+  - name: components.nlu_dense.BytePairFeaturizer
+    lang: en 
+    dim: 25
+    vs: 1000
+  - name: components.nlu_sparse.TfIdfFeaturizer
+    analyzer: char
+    min_ngram: 2
+    max_ngram: 3
+  - name: components.nlu_clf.LogisticRegressionClassifier
+    max_iter: 2000
+  - name: components.nlu_ent.CapitalisedEntityExtractor
+    max_iter: 2000
+
+policies:
+  - name: MemoizationPolicy
+  - name: RulePolicy
+  - name: TEDPolicy
+    max_history: 5
+    epochs: 100
+    constrain_similarities: true
