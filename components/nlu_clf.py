@@ -1,21 +1,21 @@
 import logging
 from typing import Any, Text, Dict, List, Type
+
+from joblib import dump, load
 from scipy.sparse import hstack, vstack, csr_matrix
 from sklearn.linear_model import LogisticRegression
-from rasa.engine.recipes.default_recipe import DefaultV1Recipe
-from rasa.engine.graph import ExecutionContext, GraphComponent
+
 from rasa.engine.storage.resource import Resource
 from rasa.engine.storage.storage import ModelStorage
+from rasa.engine.recipes.default_recipe import DefaultV1Recipe
+from rasa.engine.graph import ExecutionContext, GraphComponent
 from rasa.nlu.featurizers.featurizer import Featurizer
-from rasa.shared.nlu.training_data.training_data import TrainingData
 from rasa.nlu.classifiers.classifier import IntentClassifier
 from rasa.nlu.classifiers import LABEL_RANKING_LENGTH
+from rasa.shared.nlu.training_data.training_data import TrainingData
 from rasa.shared.nlu.training_data.message import Message
-from rasa.shared.nlu.constants import (
-    TEXT,
-    INTENT,
-)
-from joblib import dump, load
+from rasa.shared.nlu.constants import TEXT, INTENT
+
 
 logger = logging.getLogger(__name__)
 
