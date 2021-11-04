@@ -56,6 +56,7 @@ class LogisticRegressionClassifier(IntentClassifier, GraphComponent):
         self._resource = resource
 
     def _create_X(self, messages: List[Message]) -> csr_matrix:
+        """This method creates a sparse X array that can be used for predicting"""
         X = []
         for e in messages:
             # First element is sequence features, second is sentence features
@@ -72,6 +73,10 @@ class LogisticRegressionClassifier(IntentClassifier, GraphComponent):
         return vstack(X)
 
     def _create_training_matrix(self, training_data: TrainingData):
+        """
+        This method creates a scikit-learn compatible (X, y)-pair for training
+        the logistic regression model.
+        """
         X = []
         y = []
         for e in training_data.training_examples:
