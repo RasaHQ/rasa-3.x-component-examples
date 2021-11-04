@@ -146,11 +146,11 @@ class LogisticRegressionClassifier(IntentClassifier, GraphComponent):
         execution_context: ExecutionContext,
     ) -> GraphComponent:
         with model_storage.read_from(resource) as model_dir:
-            tfidfvectorizer = load(model_dir / f"{resource.name}.joblib")
+            classifier = load(model_dir / f"{resource.name}.joblib")
             component = cls(
                 config, execution_context.node_name, model_storage, resource
             )
-            component.clf = tfidfvectorizer
+            component.clf = classifier
             return component
 
     def process_training_data(self, training_data: TrainingData) -> TrainingData:
