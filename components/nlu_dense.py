@@ -62,7 +62,7 @@ class BytePairFeaturizer(DenseFeaturizer, GraphComponent):
         config: Dict[Text, Any],
         name: Text,
     ) -> None:
-        """Constructs a new tf/idf vectorizer using the sklearn framework."""
+        """Constructs a new byte pair vectorizer."""
         super().__init__(name, config)
         # The configuration dictionary is saved in `self._config` for reference.
         self.model = BPEmb(
