@@ -97,7 +97,7 @@ class TfIdfFeaturizer(SparseFeaturizer, GraphComponent):
         # Make distinction between sentence and sequence features
         text_vector = self.tfm.transform([message.get(TEXT)])
         word_vectors = self.tfm.transform([t.text for t in tokens])
-    
+
         final_sequence_features = Features(
             word_vectors,
             FEATURE_TYPE_SEQUENCE,
@@ -124,16 +124,16 @@ class TfIdfFeaturizer(SparseFeaturizer, GraphComponent):
         """Processes the training examples in the given training data in-place."""
         self.process(training_data.training_examples)
         return training_data
-    
+
     def persist(self) -> None:
         """
         Persist this model into the passed directory.
-        
+
         Returns the metadata necessary to load the model again. In this case; `None`.
         """
         with self._model_storage.write_to(self._resource) as model_dir:
             dump(self.tfm, model_dir / "tfidfvectorizer.joblib")
-    
+
     @classmethod
     def load(
         cls,
