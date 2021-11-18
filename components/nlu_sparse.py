@@ -70,6 +70,7 @@ class TfIdfFeaturizer(SparseFeaturizer, GraphComponent):
         self._resource = resource
 
     def train(self, training_data: TrainingData) -> Resource:
+        """Trains the component from training data."""
         texts = [e.get(TEXT) for e in training_data.training_examples if e.get(TEXT)]
         self.tfm.fit(texts)
         self.persist()
