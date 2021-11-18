@@ -22,12 +22,12 @@ pipeline:
   - name: components.nlu_clf.LogisticRegressionClassifier
     max_iter: 2000
   - name: components.nlu_ent.CapitalisedEntityExtractor
-    max_iter: 2000
+    entity_name: some_random_entity_name
 
 policies:
   - name: MemoizationPolicy
   - name: RulePolicy
   - name: TEDPolicy
     max_history: 5
-    epochs: 100
+    epochs: 20
     constrain_similarities: true
