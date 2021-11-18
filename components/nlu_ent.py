@@ -35,7 +35,7 @@ class CapitalisedEntityExtractor(IntentClassifier, GraphComponent):
 
     @staticmethod
     def get_default_config() -> Dict[Text, Any]:
-        return {"name": "THING"}
+        return {"entity_name": "THING"}
 
     def __init__(
         self,
@@ -45,7 +45,7 @@ class CapitalisedEntityExtractor(IntentClassifier, GraphComponent):
         resource: Resource,
     ) -> None:
         self.name = name
-        self.entity_name = config.get("name")
+        self.entity_name = config.get("entity_name")
 
         # We need to use these later when saving the trained component.
         self._model_storage = model_storage
