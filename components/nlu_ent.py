@@ -44,7 +44,6 @@ class CapitalisedEntityExtractor(EntityExtractorMixin, GraphComponent):
         model_storage: ModelStorage,
         resource: Resource,
     ) -> None:
-        # super().__init__()
         self.entity_name = config.get("entity_name")
 
         # We need to use these later when saving the trained component.
